@@ -1,0 +1,10 @@
+venv
+*.pyc
+*.sqlite3
+.env
+migrations
+media
+staticfiles
+.vscode
+celerybeat-schedule
+.DS_Store
