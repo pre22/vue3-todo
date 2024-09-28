@@ -1,15 +1,15 @@
 import { defineStore } from "pinia";
 import axios from "axios";
-import { useAuthStore } from "./users";
+import useUserStore from "./users";
 
-export const useTodoStore =  defineStore('todo', {
+export default defineStore('todo', {
     state: () => ({
         todos: [],
     }),
 
     actions: {
         async fetchTodos() {
-            const authStore = useAuthStore();
+            const authStore = useUserStore();
 
             const response = await axios.get('/get-todos/', {
                 headers: {
@@ -22,7 +22,7 @@ export const useTodoStore =  defineStore('todo', {
         },
 
         async addTodo(todoText) {
-            const authStore = useAuthStore()
+            const authStore = useUserStore()
 
             const response = await axios.post(
                 '/add-todo/',
@@ -38,7 +38,7 @@ export const useTodoStore =  defineStore('todo', {
         },
 
         async deleteTodo(id) {
-            const authStore = useAuthStore();
+            const authStore = useUserStore();
 
             await axios.delete(`/delete-todo/${id}/`, {
                 headers: {
@@ -46,6 +46,27 @@ export const useTodoStore =  defineStore('todo', {
                 }
             }),
             this.todos = this.todos.filter((todo) => todo.id !== id);
+        },
+
+        async toggleTodoCompletion(id, isComplete) {
+            const authStore = useUserStore()
+
+            const response = await axios.patch(
+                `/update-todo/${id}`,
+                { is_complete: !isComplete },
+                {
+                    headers: {
+                        Authorization: `Bearer ${authStore.token}`,
+                    }
+                }
+            )
+
+            const updatedTodo = response.data;
+            const index = this.todos.findIndex((todo) => todo.id === id);
+
+            if (index !== -1) {
+                this.todos[index].is_complete = updatedTodo.is_complete
+            }
         }
     }
 })
