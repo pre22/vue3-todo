@@ -1,85 +1,71 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
+  <div class="container">
+    <div class="row ">
+      <h1>Vue 3 Todo List</h1>
     </div>
-  </header>
 
-  <RouterView />
+    <div class="row ">
+      <div class="col">
+
+        <div class="input-group mb-3">
+          <input class="form-control" type="text" v-model="newTodo" @keyup.enter="addTodo" placeholder="Add a new task">
+        </div>
+      </div>
+    </div>
+
+    <div class="row ">
+      <div class="col">
+
+        <ul class="list-group">
+          <li class="list-group-item" v-for="(todo, index) in todos" :key="index">
+            <div class="d-flex justify-content-between">
+  
+              <span :class="{ done: todo.completed }" @click="toggleCompletion(index)">
+                {{ todo.text }}
+              </span>
+              <button type="button" class="btn btn-danger btn-sm ps-2" @click="deleteTodo(index)">Delete</button>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </template>
 
+<script setup>
+import { ref } from "vue";
+
+// Step 4: Reactive State
+const newTodo = ref('');
+const todos = ref([
+  { text: 'Learn Vue 3', completed: false },
+  { text: 'Build a Todo List', completed: false },
+]);
+
+
+// Step 5: Adding the new Todo
+const addTodo = () => {
+  if (newTodo.value.trim() !== '') {
+    todos.value.push({ text: newTodo.value, completed: false })
+    newTodo.value = ''; // Clear the input
+  }
+}
+
+const deleteTodo = (index) => {
+  todos.value.splice(index, 1)
+}
+
+// Step 7: Toggling completion status
+const toggleCompletion = (index) => {
+  todos.value[index].completed = !todos.value[index].completed;
+}
+
+
+</script>
+
 <style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
+  .done {
+    text-decoration: line-through;
   }
 
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
-}
 </style>
