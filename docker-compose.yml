@@ -1,0 +1,24 @@
+services:
+  todo_frontend:
+    container_name: todo_frontend
+    build: ./vue3-todo
+    command: npm run dev
+    volumes:
+      - ./vue3-todo:/app
+    ports:
+      - "5173:5173"
+      - "4173:4173"
+    
+    depends_on:
+      - todo_backend
+
+  todo_backend:
+    container_name: todo_backend
+    build: ./todo_api
+    command: sh ./entrypoint.sh
+    volumes:
+      - ./todo_api:/code
+    ports:
+      - "8000:8000"
+
+# volumes:
