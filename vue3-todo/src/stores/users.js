@@ -9,16 +9,22 @@ export default defineStore("auth", {
 
     actions: {
         async login(email, password) {
-            const response = await axios.post('/login/', { email, password });
-            this.token = response.data.token;
-            this.user = response.data.user;
+            const response = await axios.post('/users/login/', { email, password });
+            this.token = response.data.message.access_token;
+            this.user = response.data.message.user;
             localStorage.setItem('token', this.token);
             return response;
            
         },
 
+        async register(email, password) {
+            const response = await axios.post('/users/register/', { email, password });
+            return response;
+           
+        },
+
         async logout() {
-            await axios.post('/logout/', null, {
+            await axios.post('/users/logout/', null, {
                 headers: {
                     Authorization: `Bearer ${this.token}`,
                 },
