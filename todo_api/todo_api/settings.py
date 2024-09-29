@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -40,7 +40,10 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'corsheaders',
+    'rest_framework_simplejwt',
     'todos.apps.TodosConfig',
+    'users.apps.UsersConfig',
+    
 ]
 
 MIDDLEWARE = [
@@ -86,7 +89,45 @@ DATABASES = {
     }
 }
 
-CORS_ALLOWED_ORIGINS = ['*']
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+
+LOGIN_TTL_IN_MINUTES = 43200
+CACHE_TTL_ONE_HOUR = 60 * 60
+CACHE_TTL_TEMP = 45
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=LOGIN_TTL_IN_MINUTES),
+    'REFRESH_TOKEN_LIFETIME': timedelta(minutes=LOGIN_TTL_IN_MINUTES),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN': False,
+
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'VERIFYING_KEY': None,
+    'AUDIENCE': None,
+    'ISSUER': None,
+
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'id',
+
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_TYPE_CLAIM': 'token_type',
+
+    'JTI_CLAIM': 'jti',
+
+    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
+    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=LOGIN_TTL_IN_MINUTES),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(minutes=LOGIN_TTL_IN_MINUTES * 3),
+}
+
+# CORS_ALLOWED_ORIGINS = ['http']
 CORS_ALLOW_ALL_ORIGINS = True
 
 # Password validation
