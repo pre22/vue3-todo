@@ -32,6 +32,7 @@ class UserLoginView(APIView):
 
         if serializer.is_valid():
             data = serializer.validated_data
+            print(data)
             
             try:
                 user = User.objects.get(email=data['email'])
@@ -44,10 +45,14 @@ class UserLoginView(APIView):
                         'access_token': str(access_token),
                         'user': user.email
                     }
-                    return Response(response_data, status=status.HTTP_201_CREATED)
+                    return Response({"message": response_data}, status=status.HTTP_201_CREATED)
+                
+                elif not check:
+                    print('not check')
+                    return Response({"error": "email or password incorrect"}, status=status.HTTP_400_BAD_REQUEST)
 
             except User.DoesNotExist:
                 return Response({'error': 'New User? Kindly Create a New Account'}, status=status.HTTP_400_BAD_REQUEST)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        print(serializer.errors)
+        return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
