@@ -50,7 +50,7 @@ router.beforeEach((to, from, next) => {
   }
   const store = useUserStore()
 
-  if (store.user) {
+  if (store.token) {
     next()
   } else {
     next({ name: 'home' })
