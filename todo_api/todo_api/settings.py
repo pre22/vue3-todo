@@ -52,6 +52,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'todo_api.urls'
+AUTH_USER_MODEL = "users.User"
 
 TEMPLATES = [
     {
