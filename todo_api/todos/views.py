@@ -17,7 +17,7 @@ class TodosView(APIView):
         '''Return List of todos'''
         instance = TodoModel.objects.filter(user=self.request.user)
         response = serializers.TodoListSerializer(instance, many=True)
-        return Response(response.data, status=status.HTTP_200_OK)
+        return Response({"message": response.data}, status=status.HTTP_200_OK)
     
     def post(self, request, *args, **kwargs):
         '''Create New Todos'''
