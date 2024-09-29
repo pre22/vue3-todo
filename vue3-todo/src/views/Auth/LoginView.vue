@@ -3,6 +3,19 @@
     <div>
       <h1 class="text-success">Login your Account</h1>
     </div>
+
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" v-if="errorMessage">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      {{ errorMessage }}
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+        @click="clearErrorMessage"
+      ></button>
+    </div>
+
     <form @submit.prevent="login">
       <div class="mb-3">
         <label for="exampleInputEmail1" class="form-label">Email address</label>
@@ -44,6 +57,7 @@ import { useRouter } from 'vue-router'
 
 const email = ref('')
 const password = ref('')
+const errorMessage = ref('')
 
 const authStore = useUserStore()
 const router = useRouter()
@@ -53,7 +67,11 @@ const login = async () => {
     await authStore.login(email.value, password.value)
     router.push('/todos')
   } catch (error) {
-    console.log(error)
+    errorMessage.value = error.response.data.error
   }
+}
+
+const clearErrorMessage = () => {
+  errorMessage.value = ''
 }
 </script>
