@@ -31,7 +31,7 @@ class TodosView(APIView):
                 user=self.request.user,
                 todo=data['todo']
             )
-            return Response({'message': 'You have successfully created a todo'}, status=status.HTTP_200_OK)
+            return Response({'message': data['todo']}, status=status.HTTP_200_OK)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
