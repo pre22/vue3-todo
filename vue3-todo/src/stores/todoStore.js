@@ -16,25 +16,24 @@ export default defineStore('todo', {
                     Authorization: `Bearer ${authStore.token}`,
                 },
             });
-
-            this.todos = response.data;
-            
+            // console.log(response.data.message)
+            this.todos = response.data.message;
+            localStorage.setItem('todo', JSON.stringify(response.data.message));
         },
 
         async addTodo(todoText) {
             const authStore = useUserStore()
 
-            const response = await axios.post(
-                '/add-todo/',
-                { text: todoText },
+            await axios.post(
+                '/add-todos/',
+                { todo: todoText },
                 {
                     headers: {
                         Authorization: `Bearer ${authStore.token}`,
                     }
                 }
             );
-
-            this.todos.push(response.data);
+            await this.fetchTodos();
         },
 
         async deleteTodo(id) {
@@ -45,15 +44,14 @@ export default defineStore('todo', {
                     Authorization: `Bearer ${authStore.token}`,
                 }
             }),
-            this.todos = this.todos.filter((todo) => todo.id !== id);
+            await this.fetchTodos();
         },
 
         async toggleTodoCompletion(id, isComplete) {
             const authStore = useUserStore()
 
             const response = await axios.patch(
-                `/update-todo/${id}`,
-                { is_complete: !isComplete },
+                `/update-todos/${id}/${!isComplete}/`,
                 {
                     headers: {
                         Authorization: `Bearer ${authStore.token}`,
@@ -67,6 +65,15 @@ export default defineStore('todo', {
             if (index !== -1) {
                 this.todos[index].is_complete = updatedTodo.is_complete
             }
-        }
+        },
+
+        loadTodos() {
+            console.log('getting called')
+            const storedTodos = localStorage.getItem('todo');
+            
+            if (storedTodos) {
+              this.todos = JSON.parse(storedTodos);
+            }
+        },
     }
 })
