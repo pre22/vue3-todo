@@ -51,7 +51,7 @@ class TodosView(APIView):
             instance.status = _status
             instance.save()
 
-            return Response({'error': 'Record updated successfully'}, status=status.HTTP_200_OK)
+            return Response({'message': 'Record updated successfully'}, status=status.HTTP_200_OK)
         except TodoModel.DoesNotExist:
             return Response({'error': 'Record with id does not exist on this account'}, status=status.HTTP_400_BAD_REQUEST)
         
@@ -66,10 +66,14 @@ class DeleleTodoView(APIView):
     '''Delete Todo'''
     permission_classes = (permissions.IsAuthenticated,)
 
-    def post(self, request, id, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
+        _id = kwargs.get('id')
 
+        if not _id:
+            return Response({'error': 'Kindly pass in both an ID value'}, status=status.HTTP_400_BAD_REQUEST)
+        
         try:
-            instance = TodoModel.objects.get(user=self.request.user, id=id)
+            instance = TodoModel.objects.get(user=self.request.user, id=_id)
             instance.delete()
 
             return Response({'error': 'Record deleted successfully'}, status=status.HTTP_200_OK)
