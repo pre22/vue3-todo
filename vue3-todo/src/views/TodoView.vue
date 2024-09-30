@@ -34,10 +34,10 @@
       <ul class="list-group" v-if="todoStore.todos">
         <li class="list-group-item" v-for="(todo, index) in todoStore.todos" :key="index">
           <div class="d-flex justify-content-between">
-            <span :class="{ done: todo.is_complete }" @change="toggleTodo(todo)">
+            <span :class="{ done: todo.status === 'Completed' }" @click="handleSpanClick(todo)">
               {{ todo.todo }}
             </span>
-            <button type="button" class="btn btn-danger btn-sm ps-2" @click="deleteTodo(index)">
+            <button type="button" class="btn btn-danger btn-sm ps-2" @click="deleteTodo(todo.id)">
               Delete
             </button>
           </div>
@@ -55,6 +55,8 @@ const newTodo = ref('')
 const todoStore = useTodoStore()
 const errorMessage = ref('')
 
+let isComplete = false
+
 onMounted(async () => {
   await todoStore.fetchTodos()
   // todos.value.push(...todoStore.todos)
@@ -65,8 +67,9 @@ const addTodo = () => {
   newTodo.value = ''
 }
 
-const toggleTodo = (todo) => {
-  todoStore.toggleTodoCompletion(todo.id, todo.is_complete)
+const toggleTodo = (todo, is_complete) => {
+  console.log('toggle')
+  todoStore.toggleTodoCompletion(todo.id, is_complete)
 }
 
 const deleteTodo = async (id) => {
@@ -80,4 +83,15 @@ const deleteTodo = async (id) => {
 const clearErrorMessage = () => {
   errorMessage.value = ''
 }
+
+const handleSpanClick = (todo) => {
+  toggleTodo(todo, !isComplete)
+  isComplete = !isComplete
+}
 </script>
+
+<style scoped>
+.done {
+  text-decoration: line-through;
+}
+</style>
