@@ -23,9 +23,3 @@ import AppHeader from './components/AppHeader.vue'
 //   }
 // })
 </script>
-
-<style scoped>
-.done {
-  text-decoration: line-through;
-}
-</style>
