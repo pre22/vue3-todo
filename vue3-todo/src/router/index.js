@@ -14,12 +14,18 @@ const routes = [
   {
     path: '/login',
     name: 'login',
-    component: LoginView
+    component: LoginView,
+    meta: {
+      requiresNoAuth: true
+    },
   },
   {
     path: '/register',
     name: 'register',
-    component: RegisterView
+    component: RegisterView,
+    meta: {
+      requiresNoAuth: true
+    },
   },
   {
     path: '/todos',
