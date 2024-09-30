@@ -38,33 +38,39 @@ export default defineStore('todo', {
 
         async deleteTodo(id) {
             const authStore = useUserStore();
-
-            await axios.delete(`/delete-todo/${id}/`, {
-                headers: {
-                    Authorization: `Bearer ${authStore.token}`,
+            
+            await axios.post(`/delete-todo/${id}/`, {} ,  
+                {
+                    headers: {
+                        Authorization: `Bearer ${authStore.token}`,
+                    }
                 }
-            }),
+            );
+            
             await this.fetchTodos();
         },
 
         async toggleTodoCompletion(id, isComplete) {
             const authStore = useUserStore()
+            let _status;
 
-            const response = await axios.patch(
-                `/update-todos/${id}/${!isComplete}/`,
+            if (isComplete === true) {
+                _status = "Completed"
+            } else if (isComplete === false) {
+                _status = "Not-Completed"
+            }
+            console.log(id, isComplete, _status)
+            
+            await axios.put(
+                `/update-todos/${id}/${_status}/`, {} ,
                 {
                     headers: {
                         Authorization: `Bearer ${authStore.token}`,
                     }
                 }
             )
-
-            const updatedTodo = response.data;
-            const index = this.todos.findIndex((todo) => todo.id === id);
-
-            if (index !== -1) {
-                this.todos[index].is_complete = updatedTodo.is_complete
-            }
+            await this.fetchTodos();
+           
         },
 
         loadTodos() {
